@@ -13,7 +13,7 @@ RSpec.describe "Music Collection" do
     end
 
     it "should add albums as well as artists, return appropriate message" do
-      
+
     end
   end
 
