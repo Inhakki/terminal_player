@@ -11,5 +11,4 @@ class Album
     @played = true
     puts "You're listening to " + '"' + @title + '"'
   end
-
 end

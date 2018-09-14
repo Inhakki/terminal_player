@@ -9,5 +9,12 @@ class Artist
 
   def add_album(album)
     @albums << album
+    puts "Added \"#{album.title}\" by #{@name}"
+  end
+
+  def find_album(album_name)
+    @albums.find do |album|
+      album.title == album_name
+    end
   end
 end
