@@ -17,4 +17,14 @@ class Artist
       album.title == album_name
     end
   end
+
+  def find_and_play_album(album_name)
+    album = find_album(album_name)
+
+    if album
+      album.play
+    else
+      puts "That album does not exist. Please select an album that exists"
+    end
+  end
 end
