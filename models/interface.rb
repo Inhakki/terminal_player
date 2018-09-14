@@ -1,8 +1,11 @@
 class Interface
 
   def start_console
-    while(input)
+
+    while(input != 'quit')
 
     end
   end
+
+
 end
