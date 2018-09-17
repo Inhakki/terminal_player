@@ -1,3 +1,7 @@
+require 'byebug'
+require_relative './album'
+require_relative './artist'
+
 class MusicCollection
   attr_reader :artists
 
@@ -19,22 +23,25 @@ class MusicCollection
   end
 
   def add_album(album_title, artist_name)
-    album = Album.new(album_title)
-    matched_artist = find_artist(artist_name)
+    if validate_uniqueness_of_album(album_title)
 
-    if matched_artist
-      matched_artist.add_album(album)
-    else
-      artist = Artist.new(artist_name)
-      artist.add_album(album)
-      add_artist(artist)
+      album = Album.new(album_title)
+      matched_artist = find_artist(artist_name)
+
+      if matched_artist
+        matched_artist.add_album(album)
+      else
+        artist = Artist.new(artist_name)
+        artist.add_album(album)
+        add_artist(artist)
+      end
     end
   end
 
   def find_album_and_play(album_name)
     @artists.each do |artist|
       artist.albums.each do |album|
-        if album.name == album_name
+        if album.title == album_name
           album.play
         else
           puts "That album does not exist. Please select an album that exists"
@@ -43,26 +50,44 @@ class MusicCollection
     end
   end
 
-  def list_all_albums(by_artist=nil)
+  def list_all_albums_or_by_artist(unplayed, artist_name=nil)
+    if artist_name
+      artist = find_artist(artist_name)
+      show_unplayed_or_played_albums(unplayed, artist)
+      return
+    end
+
     @artists.each do |artist|
-      artist.albums.each do |album|
+      show_unplayed_or_played_albums(unplayed, artist)
+    end
+  end
+
+  def show_unplayed_or_played_albums(unplayed_only, artist)
+    artist.albums.each do |album|
+      if unplayed_only
+        unless album.played
+          puts "\"#{album.title}\" by #{artist.name}"
+        end
+      else
         puts "\"#{album.title}\" by #{artist.name} (#{played?(album.played)})"
       end
     end
   end
 
-  def show(unplayed, artist=nil)
-    if unplayed
-
-    else
-      list_all_albums
-    end
-  end
-
   private
 
-  def prevent_album_title_clashes
+  def validate_uniqueness_of_album(album_title)
+    name_usable = true
+    @artists.each do |artist|
+      artist.albums.each do |album|
+        if album_title == album.title
+          name_usable = false
+          puts "\"#{album.title}\" already exists in collection under #{artist.name}"
+        end
+      end
+    end
 
+    name_usable
   end
 
   def played?(album_played)
